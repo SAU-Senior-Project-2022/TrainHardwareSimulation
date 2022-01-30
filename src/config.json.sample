@@ -1,0 +1,5 @@
+{
+    "api_base_url": "http://train.jpeckham.com:5000",
+    "station_id": 1,
+    "update_time": 30
+}
