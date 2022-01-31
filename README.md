@@ -1,5 +1,5 @@
 # TrainHardwareSimulation
-Python software for simulating hardware which monitors for trains and communicates with a backend [here](https://github.com/SAU-Senior-Project-2022/train_backend).
+Python software for simulating hardware which monitors for trains and communicates with a backend [here](https://github.com/SAU-Senior-Project-2022/train_backend). A detailed requirements document for this project can be seen [here](doc/Requirements.md).
 
   - [Train Hardware Simulation](#trainhardwaresimulation)
     - [Prerequisites](#prerequisites)
