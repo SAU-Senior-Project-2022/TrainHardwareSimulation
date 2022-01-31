@@ -105,11 +105,11 @@ class TrainSim:
         self._comm_failure = state
     
     def stop(self):
+        self._running = False
         if self._update_thread.is_alive():
             self._update_thread.join(3) # wait 3 s for thread to stop
         if self._schedule_thread.is_alive():
             self._schedule_thread.join(3)
-        self._running = False
 
     def run(self):
         self._update_thread.start()

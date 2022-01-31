@@ -5,7 +5,7 @@ train,1:30pm,1800,,Train
 train,10pm,10,11:59pm,Train
 comm_failure,1:00pm,90,2:00pm,Communications failure
 hard_failure,2:15pm,,,Hardware failure
-train,10:20pm,45,,Short night train
-train,10:20pm,90,10:25pm,Random night train
-comm_failure,10:22pm,120,,Communications failure
-hard_failure,10:25pm,,,Hardware failure
+train,10:20pm EST,45,,Short night train
+train,10:20pm EST,90,10:25pm EST,Random night train
+comm_failure,10:22pm EST,120,,Communications failure
+hard_failure,10:25pm EST,,,Hardware failure

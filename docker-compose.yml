@@ -5,15 +5,18 @@ services:
       - ./sampleconfigs/:/config:ro
     environment:
       - TRAIN_CONFIG_PATH=/config/config_train1.json
+      - TZ=America/Detroit
   train2:
     build: .
     volumes:
       - ./sampleconfigs/:/config:ro
     environment:
       - TRAIN_CONFIG_PATH=/config/config_train2.json
+      - TZ=America/Detroit
   train3:
     build: .
     volumes:
       - ./sampleconfigs/:/config:ro
     environment:
       - TRAIN_CONFIG_PATH=/config/config_train3.json
+      - TZ=America/Detroit

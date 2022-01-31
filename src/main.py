@@ -2,13 +2,6 @@
 import os, json, signal
 from trainsim import TrainSim
 
-# sched Event scheduler -> https://docs.python.org/3/library/sched.html
-#                          https://schedule.readthedocs.io/en/stable/
-# backend documentation -> http://train.jpeckham.com:5000/site/documentation
-# locations ->             http://train.jpeckham.com:5000/location
-# get state of station     http://train.jpeckham.com:5000/state/1
-
-
 config_file_path = os.getenv('TRAIN_CONFIG_PATH') or 'config.json'
 
 print(f"Loading config from {config_file_path}")
@@ -19,7 +12,9 @@ config_file.close()
 sim = TrainSim(config)
 
 def signal_handler(sig, frame):
+    print("Received signal to stop...")
     sim.stop()
 signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 sim.run()
