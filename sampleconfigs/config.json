@@ -1,0 +1,31 @@
+{
+    "api_base_url": "http://train.jpeckham.com:5000",
+    "station_id": 1,
+    "update_time": 30,
+    "schedule": {
+        "type": "json",
+        "simevents":[
+            {
+                "description": "Train arrived",
+                "type": "train",
+                "start_time": "8:00PM",
+                "end_time": "",
+                "duration": 360
+            },
+            {
+                "description": "Communications failure",
+                "type": "comm_failure",
+                "start_time": "7:59PM",
+                "end_time": "",
+                "duration": 120
+            },
+            {
+                "description": "Hardware failure",
+                "type": "hard_failure",
+                "start_time": "8:07PM",
+                "end_time": "",
+                "duration": ""
+            }
+        ]
+    }
+}

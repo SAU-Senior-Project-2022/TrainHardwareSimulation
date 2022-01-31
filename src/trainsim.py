@@ -1,33 +1,139 @@
+from tracemalloc import stop
+from typing import Dict
 import requests, sched, time
+from dateutil.parser import parse
+from threading import Thread
+from schedule import Schedule
+from simevent import SimEventType
+from random import randint
 
 class TrainSim:
-    def __init__(self, config) -> None:
+    def __init__(self, config: Dict) -> None:
     
-
-        self._base_url = config['api_base_url']
-        self._station_id = config['station_id']
+        self._running = True
+        self._base_url = config.get('api_base_url')
+        self._station_id = config.get('station_id') or 1
+        self._update_time = config.get('update_time') or 30
+        self._schedule_type = config.get('schedule').get('type')
+        match self._schedule_type:
+            case 'csv':
+                self._schedule = Schedule.FromCSV(config.get('schedule').get('csv_path'))
+            case 'json':
+                self._schedule = Schedule.FromObject(config.get('schedule'))
+            case _:
+                raise Exception("Schedule type must be json or csv")
         self._state = 0
-        self._scheduler = sched.scheduler()
+        self._scheduler = sched.scheduler(time.time, time.sleep)
+        self._update_thread = Thread(target=self.update_loop)
+        self._schedule_thread = Thread(target=self.schedule_loop)
+        self._comm_failure = False
+        self.populate_schedule()
 
-    def hardware_failure(self, time_0, time_1): # hardware failure after time_0 to time_1 range of time
-        pass
+    def populate_schedule(self):
 
-    def comm_loss(self): # temporary communication/connection loss
-        pass
+        now = time.time()
+        for event in self._schedule.events:
+            start_time = parse(event.start_time).timestamp()
+            end_time = None if not event.end_time else parse(event.end_time).timestamp()
+            duration = None if not event.duration else event.duration
+            random = (end_time and duration)
+            match event.type:
+                case SimEventType.Train:
+                    evt_start: int = None
+                    evt_end: int = None
+                    if random:
+                        evt_start = randint(start_time, end_time - duration)
+                        evt_end = evt_start + duration
+                    else:
+                        evt_start = start_time
+                        evt_end = end_time or evt_start + duration
+
+                    delay = evt_start - now
+                    if (delay > 0):
+                        print(f"Adding{' randomly' if random else ''} scheduled train enter for {evt_start} which is in {delay} seconds.")
+                        self._scheduler.enter(delay, 1, self.set_state, (1,))
+                        delay = evt_end - now
+                        print(f"Adding{' randomly' if random else ''} scheduled train leave for {evt_end} which is in {delay} seconds.")
+                        self._scheduler.enter(delay, 1, self.set_state, (0,))
+
+                case SimEventType.Comm_Failure:
+                    evt_start: int = None
+                    evt_end: int = None
+                    if random:
+                        evt_start = randint(start_time, end_time - duration)
+                        evt_end = evt_start + duration
+                    else:
+                        evt_start = start_time
+                        evt_end = end_time or evt_start + duration
+
+                    delay = evt_start - now
+                    if (delay > 0):
+                        print(f"Adding{' randomly' if random else ''} scheduled comm failure start for {evt_start} which is in {delay} seconds.")
+                        self._scheduler.enter(delay, 1, self.comm_failure, (True,))
+                        delay = evt_end - now
+                        print(f"Adding{' randomly' if random else ''} scheduled comm failure end for {evt_end} which is in {delay} seconds.")
+                        self._scheduler.enter(delay, 1, self.comm_failure, (False,))
+
+                case SimEventType.Hard_Failure:
+                    evt_start: int = None
+                    if random:
+                        evt_start = randint(start_time, end_time)
+                    else:
+                        evt_start = start_time
+
+                    delay = evt_start - now
+                    if (delay > 0):
+                        print(f"Adding{' randomly' if random else ''} scheduled hardware failure for {evt_start} which is in {delay} seconds.")
+                        self._scheduler.enter(delay, 1, self.hard_failure)                    
+        
+        if (delay > 0):
+            pass
+
+    def set_state(self, state):
+        print(f"Train/obj is now {'present' if state else 'not present'}")
+        self._state = state
+
+    def hard_failure(self): # hardware failure
+        print("Simulated hardware has failed!")
+        self.stop()
+
+    def comm_failure(self, state): # temporary communication/connection loss
+        print(f"Communications are now {'down' if state else 'up'}")
+        self._comm_failure = state
     
-    def run(self):
-        while True:
-            self._state = 0
-            self.send_state()
-            time.sleep(2.0)  # sleep parameter is in seconds, not miliseconds
+    def stop(self):
+        self._scheduler = stop()
+        if self._update_thread.is_alive():
+            self._update_thread.join(3) # wait 3 s for thread to stop
+        if self._schedule_thread.is_alive():
+            self._schedule_thread.join(3)
+        self._running = False
 
-            self._state = 1
+    def run(self):
+        self._update_thread.start()
+        self._schedule_thread.start()
+
+        while self._running:
+            time.sleep(1)
+
+        print("Shutting down...")
+        self.stop()
+
+    def update_loop(self):
+        # future: replace with custom Thread that allows better cleanup
+        while self._running:
             self.send_state()
-            time.sleep(2.0)
+            time.sleep(self._update_time)
+
+    def schedule_loop(self):
+        while self._running:
+            self._scheduler.run(blocking=False)
+            time.sleep(1.0)
 
     def send_state(self):
-        url = f"{self._base_url}/state/{self._station_id}"
-        data = {"state":self._state}
-        print(f"Sending state to backend: {url} => {data}")
-        resp = requests.post(url, json=data)
-        print(f"Server returned with: {resp.content}")
+        if not self._comm_failure:
+            url = f"{self._base_url}/state/{self._station_id}"
+            data = {"state":self._state}
+            print(f"Sending state to backend: {url} => {data}")
+            resp = requests.post(url, json=data)
+            print(f"Server returned with: {resp.content}")

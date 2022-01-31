@@ -1,3 +1,19 @@
 services:
   train1:
     build: .
+    volumes:
+      - ./sampleconfigs/:/config:ro
+    environment:
+      - TRAIN_CONFIG_PATH=/config/config_train1.json
+  train2:
+    build: .
+    volumes:
+      - ./sampleconfigs/:/config:ro
+    environment:
+      - TRAIN_CONFIG_PATH=/config/config_train2.json
+  train3:
+    build: .
+    volumes:
+      - ./sampleconfigs/:/config:ro
+    environment:
+      - TRAIN_CONFIG_PATH=/config/config_train3.json

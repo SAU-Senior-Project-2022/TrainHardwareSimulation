@@ -1,0 +1,9 @@
+{
+    "api_base_url": "http://train.jpeckham.com:5000",
+    "station_id": 3,
+    "update_time": 20,
+    "schedule": {
+        "type": "csv",
+        "csv_path": "/config/train2.csv"
+    }
+}

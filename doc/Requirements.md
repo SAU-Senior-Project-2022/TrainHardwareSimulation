@@ -3,8 +3,8 @@
   2. Simulation is highly configurable
      1. Time of trains entering and leaving crossing can be configured
      2. Non-train objects detected at random times [very low probability]
-  3. Which location/station is being monitored [station ID]
-  4. Transmits state to backend every 30 seconds for the station monitored
+     3. Which location/station is being monitored [station ID]
+  3. Transmits state to backend every 30 seconds for the station monitored
 
 # Non-functional Requirements
   1. Uses Python programming language

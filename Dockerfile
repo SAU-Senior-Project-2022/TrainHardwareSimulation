@@ -1,4 +1,4 @@
-FROM python:3.9.10
+FROM python:3.10.2
 WORKDIR /app
 COPY ./src ./
 RUN ["pip", "install", "-r", "requirements.txt"]

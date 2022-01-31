@@ -12,6 +12,7 @@ Python software for simulating hardware which monitors for trains and communicat
   * Docker Compose
   * Python (for development outside docker)
 ## Usage
+Basic usage of the train simulation can be done with `docker-compose`. The examples below show how to start, monitor, and end the application (for however many instances are specified in `docker-compose.yaml`)
 ```bash
 # bring up containers and detach
 docker-compose -d up
@@ -28,3 +29,27 @@ When any changes are made to the source code or configs, just destroy the curren
 ### Without docker
 Also, if just developing, you may run `main.py` directly with proper arguments/environment variables
 
+## Configuration
+### Environment Variables
+  * `TRAIN_CONFIG_PATH` - the path to a JSON configuration file
+### JSON
+There is an example `config.json`
+  * `api_base_url` - base url of API to communicate with
+  * `station_id` - ID of the station
+  * `update_time` - interval between updates sent to backend server
+  * `schedule` - the schedule of the train, communication failures, and hardware failures
+    * `type` - either `json` or `csv` - if csv then include `csv_path`
+    * `simevent` - a scheduled event
+      * `description` - tells about the schedule event
+      * `type` - says what type of event it is (`train`, `comm_failure`, `hard_failure`)
+      * `start_time` - the start of the event
+      * `end_time` - end of the event
+      * `duration` - how long the event lasts
+
+### CSV Schedule
+This is from simevent.py
+  * `type` -
+  * `description`
+  * `start_type`
+  * `duration`
+  * `end_time`
