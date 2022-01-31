@@ -101,7 +101,7 @@ class TrainSim:
         self.stop()
 
     def comm_failure(self, state): # temporary communication/connection loss
-        print(f"Communications are now {'down' if state else 'up'}")
+        print(f"Communications are {'now down' if state else 'back up'}")
         self._comm_failure = state
     
     def stop(self):
