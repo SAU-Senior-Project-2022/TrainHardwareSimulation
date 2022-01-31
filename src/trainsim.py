@@ -1,5 +1,3 @@
-from tracemalloc import stop
-from typing import Dict
 import requests, sched, time
 from dateutil.parser import parse
 from threading import Thread
@@ -8,7 +6,7 @@ from simevent import SimEventType
 from random import randint
 
 class TrainSim:
-    def __init__(self, config: Dict) -> None:
+    def __init__(self, config: dict) -> None:
     
         self._running = True
         self._base_url = config.get('api_base_url')
@@ -36,7 +34,7 @@ class TrainSim:
             start_time = parse(event.start_time).timestamp()
             end_time = None if not event.end_time else parse(event.end_time).timestamp()
             duration = None if not event.duration else event.duration
-            random = (end_time and duration)
+            random = (end_time is not None) and (duration is not None)
             match event.type:
                 case SimEventType.Train:
                     evt_start: int = None
@@ -50,10 +48,12 @@ class TrainSim:
 
                     delay = evt_start - now
                     if (delay > 0):
-                        print(f"Adding{' randomly' if random else ''} scheduled train enter for {evt_start} which is in {delay} seconds.")
+                        pretty_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(evt_start))
+                        print(f"Adding{' randomly' if random else ''} scheduled train enter for {pretty_time} which is in {delay} seconds.")
                         self._scheduler.enter(delay, 1, self.set_state, (1,))
                         delay = evt_end - now
-                        print(f"Adding{' randomly' if random else ''} scheduled train leave for {evt_end} which is in {delay} seconds.")
+                        pretty_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(evt_end))
+                        print(f"Adding{' randomly' if random else ''} scheduled train leave for {pretty_time} which is in {delay} seconds.")
                         self._scheduler.enter(delay, 1, self.set_state, (0,))
 
                 case SimEventType.Comm_Failure:
@@ -68,10 +68,12 @@ class TrainSim:
 
                     delay = evt_start - now
                     if (delay > 0):
-                        print(f"Adding{' randomly' if random else ''} scheduled comm failure start for {evt_start} which is in {delay} seconds.")
+                        pretty_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(evt_start))
+                        print(f"Adding{' randomly' if random else ''} scheduled comm failure start for {pretty_time} which is in {delay} seconds.")
                         self._scheduler.enter(delay, 1, self.comm_failure, (True,))
                         delay = evt_end - now
-                        print(f"Adding{' randomly' if random else ''} scheduled comm failure end for {evt_end} which is in {delay} seconds.")
+                        pretty_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(evt_end))
+                        print(f"Adding{' randomly' if random else ''} scheduled comm failure end for {pretty_time} which is in {delay} seconds.")
                         self._scheduler.enter(delay, 1, self.comm_failure, (False,))
 
                 case SimEventType.Hard_Failure:
@@ -83,7 +85,8 @@ class TrainSim:
 
                     delay = evt_start - now
                     if (delay > 0):
-                        print(f"Adding{' randomly' if random else ''} scheduled hardware failure for {evt_start} which is in {delay} seconds.")
+                        pretty_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(evt_start))
+                        print(f"Adding{' randomly' if random else ''} scheduled hardware failure for {pretty_time} which is in {delay} seconds.")
                         self._scheduler.enter(delay, 1, self.hard_failure)                    
         
         if (delay > 0):
@@ -102,7 +105,6 @@ class TrainSim:
         self._comm_failure = state
     
     def stop(self):
-        self._scheduler = stop()
         if self._update_thread.is_alive():
             self._update_thread.join(3) # wait 3 s for thread to stop
         if self._schedule_thread.is_alive():

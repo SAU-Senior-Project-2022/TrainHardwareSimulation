@@ -4,6 +4,6 @@
     "update_time": 15,
     "schedule": {
         "type": "csv",
-        "csv_path": "/config/train1.csv"
+        "csv_path": "./sampleconfigs/train1.csv"
     }
 }

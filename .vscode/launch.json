@@ -11,7 +11,7 @@
             "program": "./src/main.py",
             "console": "integratedTerminal",
             "env": {
-                "TRAIN_CONFIG_PATH": "./config_train1.json"
+                "TRAIN_CONFIG_PATH": "./sampleconfigs/config_train1.json"
             }
         }
     ]

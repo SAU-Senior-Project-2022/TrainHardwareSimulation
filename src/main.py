@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, json, argparse, signal
+import os, json, signal
 from trainsim import TrainSim
 
 # sched Event scheduler -> https://docs.python.org/3/library/sched.html

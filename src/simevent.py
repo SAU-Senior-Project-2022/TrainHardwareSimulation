@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Dict
 
 class SimEventType(str, Enum):
     Train = "train",
@@ -7,7 +6,7 @@ class SimEventType(str, Enum):
     Hard_Failure = "hard_failure"
 
 class SimEvent():
-    def __init__(self, obj: Dict) -> None:
+    def __init__(self, obj: dict) -> None:
         self.type: SimEventType = SimEventType(obj.get("type"))
         match self.type:
             case SimEventType.Train | SimEventType.Comm_Failure:

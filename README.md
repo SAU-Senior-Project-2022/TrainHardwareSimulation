@@ -25,7 +25,7 @@ docker-compose down
 ## Development
 
 ### Docker
-When any changes are made to the source code or configs, just destroy the current containers with `docker-compose down` and run `docker-compose up -d` again
+When any changes are made to the source code or configs, just destroy the current containers with `docker-compose down`, run `docker-compose build` and then run `docker-compose up -d` again
 ### Without docker
 Also, if just developing, you may run `main.py` directly with proper arguments/environment variables
 
@@ -33,23 +33,19 @@ Also, if just developing, you may run `main.py` directly with proper arguments/e
 ### Environment Variables
   * `TRAIN_CONFIG_PATH` - the path to a JSON configuration file
 ### JSON
-There is an example `config.json`
+There is an example `config.json` at [config.json](sampleconfigs/config.json), as well as others in that folder, and a reference below:
   * `api_base_url` - base url of API to communicate with
   * `station_id` - ID of the station
   * `update_time` - interval between updates sent to backend server
   * `schedule` - the schedule of the train, communication failures, and hardware failures
     * `type` - either `json` or `csv` - if csv then include `csv_path`
-    * `simevent` - a scheduled event
+    * `simevents` - only include if schedule type is `json` - an array of objects with the structure below:
       * `description` - tells about the schedule event
       * `type` - says what type of event it is (`train`, `comm_failure`, `hard_failure`)
       * `start_time` - the start of the event
       * `end_time` - end of the event
       * `duration` - how long the event lasts
 
+Note: if `start_time`, `duration`, and `end_time` are present, the system will pick an interval of length `duration` between `start_time` and `end_time`.
 ### CSV Schedule
-This is from simevent.py
-  * `type` -
-  * `description`
-  * `start_type`
-  * `duration`
-  * `end_time`
+You can find example csv schedules [here](sampleconfigs/train1.csv). They follow the same format as a `simevent` from above.

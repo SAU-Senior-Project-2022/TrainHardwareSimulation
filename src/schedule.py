@@ -1,13 +1,11 @@
 import csv
-from operator import delitem, index
-from typing import Dict
 from simevent import SimEvent
 
 class Schedule():
     def __init__(self, events) -> None:
         self.events = events
 
-    def FromObject(obj: Dict):
+    def FromObject(obj: dict):
         
         events: list[SimEvent] = []
         for event in obj['simevents']:
