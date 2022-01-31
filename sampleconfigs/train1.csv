@@ -1,11 +1,8 @@
-﻿type,start_time,duration,end_time,description
-train,12:50pm,,1:10pm,Train
-train,1:10pm,60,1:20pm,Train
-train,1:30pm,1800,,Train
-train,10pm,10,11:59pm,Train
-comm_failure,1:00pm,90,2:00pm,Communications failure
-hard_failure,2:15pm,,,Hardware failure
-train,10:20pm EST,45,,Short night train
-train,10:20pm EST,90,10:25pm EST,Random night train
-comm_failure,10:22pm EST,120,,Communications failure
-hard_failure,10:25pm EST,,,Hardware failure
+type,start_time,duration,end_time,description,,
+train,12:03:00 PM,30,,,,Base
+train,12:04:00 PM,,12:05:00 PM,,,12:02:00 PM
+train,12:09:00 PM,15,12:11:00 PM,,,
+comm_failure,12:12:00 PM,30,,,,
+comm_failure,12:13:00 PM,,12:15,,,
+comm_failure,12:15:00 PM,15,12:17:00 PM,,,
+hard_failure,12:18:00 PM,,,,,

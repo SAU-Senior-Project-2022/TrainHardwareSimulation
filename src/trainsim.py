@@ -93,7 +93,7 @@ class TrainSim:
             pass
 
     def set_state(self, state):
-        print(f"Train/obj is now {'present' if state else 'not present'}")
+        print(f"Train is now {'present' if state else 'gone'}")
         self._state = state
 
     def hard_failure(self): # hardware failure
@@ -137,5 +137,8 @@ class TrainSim:
             url = f"{self._base_url}/state/{self._station_id}"
             data = {"state":self._state}
             print(f"Sending state to backend: {url} => {data}")
-            resp = requests.post(url, json=data)
-            print(f"Server returned with: {resp.content}")
+            try:
+                resp = requests.post(url, json=data, timeout=3)
+                print(f"Server returned with: {resp.content}")
+            except requests.exceptions.ReadTimeout as err:
+                print("Server timed out (Read Timeout)")
