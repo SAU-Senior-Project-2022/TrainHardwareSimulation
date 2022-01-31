@@ -7,6 +7,10 @@ Python software for simulating hardware which monitors for trains and communicat
     - [Development](#development)
       - [Docker](#docker)
       - [Without Docker](#without-docker)
+    - [Configuration](#configuration)
+      - [Environment Variables](#environment-variables)
+      - [JSON](#json)
+      - [CSV Schedules](#csv-schedule)
 ## Prerequisites
   * Docker
   * Docker Compose
